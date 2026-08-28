@@ -1,0 +1,14 @@
+[build-system]
+requires = ["uv_build>=0.12.7"]
+build-backend = "uv_build"
+
+[project]
+name = "mask"
+version = "0.0.0"
+authors = [
+  { name = "Szymon Oramus", email = "oramusszymon@gmail.com" },
+]
+description = "Package to create masks for micromagnetic simulations."
+readme = "README.md"
+license = "BSD-3-Clause"
+requires-python = ">=3.11"
