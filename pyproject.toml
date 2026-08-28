@@ -12,3 +12,17 @@ description = "Package to create masks for micromagnetic simulations."
 readme = "README.md"
 license = "BSD-3-Clause"
 requires-python = ">=3.11"
+dependencies = [
+    "matplotlib>=3.11.1",
+    "numpy>=2.4.6",
+    "pillow>=12.3.0",
+    "shapely>=2.1.2",
+]
+
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+    "notebook>=7.6.2",
+    "pytest>=9.1.1",
+    "ruff>=0.16.5",
+]
