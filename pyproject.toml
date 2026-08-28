@@ -26,3 +26,34 @@ dev = [
     "pytest>=9.1.1",
     "ruff>=0.16.5",
 ]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes
+    "I",        # isort
+    "UP",       # pyupgrade
+    "B",        # bugbear
+    "SIM",      # simplify
+    "C4",       # comprehensions
+    "NPY",      # numpy-specific
+    "PTH",      # use pathlib
+    "RUF",      # ruff's own
+]
+ignore = [
+    "E501",     # line length — the formatter owns this
+    "E741",     # ambiguous names: l, I, O
+    "B905",     # zip() strict= — noisy in numeric code
+]
+
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]           # asserts are the point
+"**/__init__.py" = ["F401"]    # re-exports
+
+[tool.ruff.format]
+docstring-code-format = true
