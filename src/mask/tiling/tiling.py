@@ -15,7 +15,7 @@ class Tiling:
 
     def get_positions(self, a1: float, a2: float | None = None, a3: float | None = None):
         periods = _fill_periods(a1, a2, a3)
-        return sum([period * np.asarray(vector) * np.asarray(positions) for (period, vector, positions) in zip(periods, self._vectors, self._positions)])
+        return sum([period * np.asarray(vector) * np.asarray(positions)[:, np.newaxis] for (period, vector, positions) in zip(periods, self._vectors, self._positions)])
 
 
     def get_rotations(self, a1: float, a2: float | None = None, a3: float | None = None):
@@ -25,8 +25,8 @@ class Tiling:
         periods = _fill_periods(a1, a2, a3)
         return sum([period * np.asarray(extent) for (period, extent) in zip(periods, self._extent)])
 
-_vectors = [[0.0, 1.0], [1.0, 0.0]]
-_positions = [[1.0, 0.0, -1.0, 0.0], [0.0, 1.0, 0.0 -1.0]]
+_vectors = [[1.0, 0.0], [0.0, 1.0]]
+_positions = [[0.0, 1.0, 0.0, -1.0], [1.0, 0.0, -1.0, 0.0]]
 _rotations = [0.0, 90.0, 180.0, 270.0]
 _extent = [[2.0, 0.0], [0.0, 2.0]]
 square_spin_ice = Tiling(_vectors, _positions, _rotations, _extent)
