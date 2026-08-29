@@ -6,10 +6,10 @@ Create periodic arrays that are represented by a rectangular cell.
 This module consists of a class that will generate positions and rotations of
 shapes to generate multiples of a rectangular unit cell and its extent.
 
-Method call 'get_positions()' will have as value a N sized iterable of 
+Method call 'get_positions(a1, a2=None, a3=None)' will have as value a N sized iterable of 
 containers with 2 elements.
-Method call 'get_rotations()' will have as a value a N sized iterable of angles.
-Method call 'get_extent()' returns the Extent of the tiling.
+Method call 'get_rotations(a1, a2=None, a3=None)' will have as a value a N sized iterable of angles.
+Method call 'get_extent(a1, a2=None, a3=None)' returns the Extent of the tiling.
 
 
 ## Module 2: Extent
