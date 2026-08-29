@@ -31,6 +31,13 @@ class Tiling:
 
 
 _vectors = [[1.0, 0.0], [0.0, 1.0]]
+_coefficients = [[0.0], [0.0]]
+_rotations = [0.0]
+_size_factors = [[1.0, 0.0], [0.0, 1.0]]
+rectangular = Tiling(_vectors, _coefficients, _rotations, _size_factors)
+
+
+_vectors = [[1.0, 0.0], [0.0, 1.0]]
 _coefficients = [[0.0, 1.0, 0.0, -1.0], [1.0, 0.0, -1.0, 0.0]]
 _rotations = [0.0, 90.0, 180.0, 270.0]
 _size_factors = [[2.0, 0.0], [0.0, 2.0]]
