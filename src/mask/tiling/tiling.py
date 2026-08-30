@@ -2,6 +2,8 @@ from collections.abc import Iterable
 
 import numpy as np
 
+from ..extent import Extent
+
 
 def _fill_periods(a1: float, a2: float | None, a3: float | None):
     return [a1, a1 if a2 is None else a2, a1 if a3 is None else a3]
@@ -33,15 +35,15 @@ class Tiling:
         return self._rotations
 
     def get_extent(self, a1: float, a2: float | None = None, a3: float | None = None):
-        size = self._get_size(a1, a2, a3)
-        pass
-        # return Extent.from_size(size)
+        return Extent.from_sizes(self._get_sizes(a1, a2, a3))
 
-    def _get_size(self, a1: float, a2: float | None = None, a3: float | None = None):
+    def _get_sizes(self, a1: float, a2: float | None = None, a3: float | None = None):
         periods = _fill_periods(a1, a2, a3)
-        return sum(
+        sizes = sum(
             [period * np.asarray(factor) for (period, factor) in zip(periods, self._size_factors)]
         )
+        assert isinstance(sizes, np.ndarray)
+        return sizes[0], sizes[1]
 
 
 _vectors = [[1.0, 0.0], [0.0, 1.0]]
