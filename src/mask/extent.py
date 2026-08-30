@@ -46,7 +46,7 @@ class Extent(NamedTuple):
     def contains(self, other: Extent) -> bool:
         x_out = any(x <= self.x0 for x in other.get_x()) | any(x >= self.x1 for x in other.get_x())
         y_out = any(y <= self.y0 for y in other.get_y()) | any(y >= self.y1 for y in other.get_y())
-        return x_out | y_out
+        return not (x_out | y_out)
 
     @classmethod
     def from_sizes(cls, sizes: tuple[float, float]) -> Extent:
