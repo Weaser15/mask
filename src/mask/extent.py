@@ -4,12 +4,26 @@ from __future__ import annotations
 
 from typing import NamedTuple
 
+import numpy as np
+
 
 class Extent(NamedTuple):
     x0: float
     y0: float
     x1: float
     y1: float
+
+    def scale(self, other: float | np.ndarray | list | tuple) -> Extent:
+        if isinstance(other, float):
+            x_mul = other
+            y_mul = other
+        elif isinstance(other, (np.ndarray, list, tuple)):
+            x_mul = other[0]
+            y_mul = other[1]
+        else:
+            raise TypeError(f"Cannot divide by {type(other)}")
+
+        return Extent(self.x0 * x_mul, self.y0 * y_mul, self.x1 * x_mul, self.y1 * y_mul)
 
     def get_width(self) -> float:
         """Return the width of the extent."""
