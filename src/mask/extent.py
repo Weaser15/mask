@@ -24,7 +24,7 @@ class Extent(NamedTuple):
     def get_centre(self) -> tuple[float, float]:
         return ((self.x0 + self.x1) / 2, (self.y0 + self.y1) / 2)
 
-    def get_dims(self) -> tuple[float, float]:
+    def get_sizes(self) -> tuple[float, float]:
         return (self.get_width(), self.get_height())
 
     def buffer(self, distance: float) -> Extent:
@@ -39,3 +39,17 @@ class Extent(NamedTuple):
         centre = self.get_centre()
         offset_x, offset_y = (x - centre[0], y - centre[1])
         return self.offset(offset_x, offset_y)
+
+    def round(self, decimals: int = 0) -> Extent:
+        return Extent(*map(round, self, [decimals] * 4))
+
+    def contains(self, other: Extent) -> bool:
+        x_out = any(x <= self.x0 for x in other.get_x()) | any(x >= self.x1 for x in other.get_x())
+        y_out = any(y <= self.y0 for y in other.get_y()) | any(y >= self.y1 for y in other.get_y())
+        return x_out | y_out
+
+    @classmethod
+    def from_sizes(cls, sizes: tuple[float, float]) -> Extent:
+        x0, x1 = -sizes[0] / 2, sizes[0] / 2
+        y0, y1 = -sizes[1] / 2, sizes[1] / 2
+        return cls(x0, y0, x1, y1)
