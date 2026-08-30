@@ -21,6 +21,15 @@ class Extent(NamedTuple):
     def get_y(self) -> tuple[float, float]:
         return (self.y0, self.y1)
 
+    def get_p0(self) -> tuple[float, float]:
+        return (self.x0, self.y0)
+
+    def get_p1(self) -> tuple[float, float]:
+        return (self.x1, self.y1)
+
+    def get_points(self) -> tuple[tuple[float, float], tuple[float, float]]:
+        return (self.get_p0(), self.get_p1())
+
     def get_centre(self) -> tuple[float, float]:
         return ((self.x0 + self.x1) / 2, (self.y0 + self.y1) / 2)
 
