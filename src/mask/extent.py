@@ -35,7 +35,7 @@ class Extent(NamedTuple):
     def offset(self, x: float, y: float) -> Extent:
         return Extent(self.x0 + x, self.y0 + y, self.x1 + x, self.y1 + y)
 
-    def centre(self, x: float, y: float) -> Extent:
+    def centre(self, x: float = 0.0, y: float = 0.0) -> Extent:
         centre = self.get_centre()
         offset_x, offset_y = (x - centre[0], y - centre[1])
         return self.offset(offset_x, offset_y)
