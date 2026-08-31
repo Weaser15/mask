@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Literal, NamedTuple
 
 import numpy as np
-from scipy.ndimage import rotate
 
 
 class Extent(NamedTuple):
@@ -41,17 +40,6 @@ class Extent(NamedTuple):
         new_y1 = (self.y1 - origin[1]) * y_mul
 
         return Extent(new_x0, new_y0, new_x1, new_y1)
-
-    def rotate(self, angle: float, origin: Literal["center"] | tuple[float, float] = "center"):
-        origin = self.get_centre() if origin == "center" else origin
-        xc, yc = self.get_centre()
-        x0, x1 = self.x0 - xc, self.x1 - xc
-        y0, y1 = self.y0 - yc, self.y1 - yc
-        x0, y0 = rotate((x0, y0), angle)
-        x1, y1 = rotate((x1, y1), angle)
-        x0, x1 = x0 + xc, x1 + xc
-        y0, y1 = y0 + yc, y1 + yc
-        return Extent(x0, y0, x1, y1)
 
     def get_width(self) -> float:
         """Return the width of the extent."""

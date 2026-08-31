@@ -14,9 +14,8 @@ from shapely import (
     contains_xy,
 )
 
-from .extent import Extent
-
 if TYPE_CHECKING:
+    from .extent import Extent
     from .shape import Shape
 
 

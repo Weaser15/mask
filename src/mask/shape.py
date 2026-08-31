@@ -130,5 +130,5 @@ class Shape:
 
     def rotate(self, angle: float, origin: Literal["center"] | tuple[float, float] = "center"):
         new_geom = rotate(self.to_shapely(), angle, origin=origin)
-        new_extent = self.get_extent().rotate(angle, origin)
+        new_extent = Extent(*new_geom.bounds)
         return Shape(new_geom, new_extent)
