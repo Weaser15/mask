@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from typing import NamedTuple
+from typing import Literal, NamedTuple
 
 import numpy as np
+from scipy.ndimage import rotate
 
 
 class Extent(NamedTuple):
@@ -13,7 +14,19 @@ class Extent(NamedTuple):
     x1: float
     y1: float
 
-    def scale(self, other: float | np.ndarray | list | tuple) -> Extent:
+    def merge(self, other: Extent):
+        x0 = min(self.x0, other.x0)
+        y0 = min(self.y0, other.y0)
+        x1 = min(self.x1, other.x1)
+        y1 = min(self.y1, other.y1)
+        return Extent(x0, y0, x1, y1)
+
+    def scale(
+        self,
+        other: float | np.ndarray | list | tuple,
+        origin: Literal["center"] | tuple[float, float] = "center",
+    ) -> Extent:
+        origin = self.get_centre() if origin == "center" else origin
         if isinstance(other, float):
             x_mul = other
             y_mul = other
@@ -22,8 +35,23 @@ class Extent(NamedTuple):
             y_mul = other[1]
         else:
             raise TypeError(f"Cannot divide by {type(other)}")
+        new_x0 = (self.x0 - origin[0]) * x_mul
+        new_y0 = (self.y0 - origin[1]) * y_mul
+        new_x1 = (self.x1 - origin[0]) * x_mul
+        new_y1 = (self.y1 - origin[1]) * y_mul
 
-        return Extent(self.x0 * x_mul, self.y0 * y_mul, self.x1 * x_mul, self.y1 * y_mul)
+        return Extent(new_x0, new_y0, new_x1, new_y1)
+
+    def rotate(self, angle: float, origin: Literal["center"] | tuple[float, float] = "center"):
+        origin = self.get_centre() if origin == "center" else origin
+        xc, yc = self.get_centre()
+        x0, x1 = self.x0 - xc, self.x1 - xc
+        y0, y1 = self.y0 - yc, self.y1 - yc
+        x0, y0 = rotate((x0, y0), angle)
+        x1, y1 = rotate((x1, y1), angle)
+        x0, x1 = x0 + xc, x1 + xc
+        y0, y1 = y0 + yc, y1 + yc
+        return Extent(x0, y0, x1, y1)
 
     def get_width(self) -> float:
         """Return the width of the extent."""
@@ -67,15 +95,15 @@ class Extent(NamedTuple):
             self.x0 - distance, self.y0 - distance, self.x1 + distance, self.y1 + distance
         )
 
-    def offset(self, x: float, y: float) -> Extent:
-        """Offset the extent by (x, y)."""
+    def translate(self, x: float, y: float) -> Extent:
+        """Translate the extent by (x, y)."""
         return Extent(self.x0 + x, self.y0 + y, self.x1 + x, self.y1 + y)
 
     def centre(self, x: float = 0.0, y: float = 0.0) -> Extent:
         """Centre the extent on (x, y). Centres on origin by default."""
         centre = self.get_centre()
         offset_x, offset_y = (x - centre[0], y - centre[1])
-        return self.offset(offset_x, offset_y)
+        return self.translate(offset_x, offset_y)
 
     def round(self, decimals: int = 0) -> Extent:
         """Round the points of the origin to the nearest decimal"""
