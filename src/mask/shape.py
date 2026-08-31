@@ -12,9 +12,9 @@ from .utils import geometry_to_image, get_image_dimensions, plot_geometry
 
 
 class Shape:
-    def __init__(self, geom: Polygon | MultiPolygon, extent: Extent):
+    def __init__(self, geom: Polygon | MultiPolygon, extent: Extent | None = None):
         self._geom = geom
-        self._extent = extent
+        self._extent = Extent(*geom.bounds) if extent is None else extent
 
     def get_extent(self):
         return self._extent
