@@ -56,3 +56,50 @@ def regular_polygon(radius: float, nsides: int):
     x, y = radius * np.sin(angles), radius * np.cos(angles)
     polygon = Polygon(zip(x, y))
     return Shape(polygon)
+
+
+def stadium(width: float, height: float, quad_segs: int = 16):
+    rx = min(width, height) / 2
+    ry = rx
+    return rectangle(width, height, rx, ry, quad_segs)
+
+
+def ring(
+    width: float,
+    height: float,
+    hole_width: float,
+    hole_height: float,
+    rx: float | None = None,
+    ry: float | None = None,
+    hole_rx: float | None = None,
+    hole_ry: float | None = None,
+    quad_segs: int = 16,
+):
+    # Make sure hole is not larger than ring.
+    if hole_width > width:
+        message = f"Hole width: {hole_width} cannot be greater than ring width: {width}!"
+        raise ValueError(message)
+    if hole_height > height:
+        message = f"Hole height: {hole_height} cannot be greater than ring height: {height}!"
+        raise ValueError(message)
+
+    # If rx and ry not specified, assume it's an elliptical ring.s
+    rx = width / 2 if rx is None else rx
+    ry = height / 2 if ry is None else ry
+
+    # if hole_rx and hole_ry not specified assume it's an elliptical hole.
+    hole_rx = hole_width / 2 if hole_rx is None else hole_rx
+    hole_ry = hole_height / 2 if hole_ry is None else hole_ry
+
+    outer = rectangle(width, height, rx, ry, quad_segs)
+    hole = rectangle(hole_width, hole_height, hole_rx, hole_ry, quad_segs)
+    return outer.difference(hole)
+
+
+def superellipse(width: float, height: float, squareness: float = 1.0, quad_segs: int = 16):
+    # Equation = |x/a|^n + |y/b|^n = 1, but parametrised.
+    t = np.linspace(0, 2 * np.pi, 4 * quad_segs, endpoint=False)
+    x = width * np.sign(np.cos(t)) * np.abs(np.cos(t)) ** (2 / squareness)
+    y = height * np.sign(np.sin(t)) * np.abs(np.sin(t)) ** (2 / squareness)
+    superellipse = Polygon(zip(x, y))
+    return Shape(superellipse)
