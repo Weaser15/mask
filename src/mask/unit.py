@@ -1,3 +1,6 @@
+from math import floor
+from typing import Literal
+
 import numpy as np
 from shapely import Point, Polygon, box
 from shapely.affinity import scale, skew
@@ -98,7 +101,44 @@ def ring(
 def superellipse(width: float, height: float, squareness: float = 1.0, quad_segs: int = 16):
     # Equation = |x/a|^n + |y/b|^n = 1, but parametrised.
     t = np.linspace(0, 2 * np.pi, 4 * quad_segs, endpoint=False)
-    x = width * np.sign(np.cos(t)) * np.abs(np.cos(t)) ** (2 / squareness)
-    y = height * np.sign(np.sin(t)) * np.abs(np.sin(t)) ** (2 / squareness)
+    x = 0.5 * width * np.sign(np.cos(t)) * np.abs(np.cos(t)) ** (2 / squareness)
+    y = 0.5 * height * np.sign(np.sin(t)) * np.abs(np.sin(t)) ** (2 / squareness)
     superellipse = Polygon(zip(x, y))
     return Shape(superellipse)
+
+
+def modulated_wire(
+    width: float,
+    height: float,
+    mod_width: float,
+    mod_depth: float,
+    period: float,
+    squareness: float = 0.5,
+    side: Literal["left", "right", "both", "none"] = "both",
+    offset: float | tuple[float, float] = 0.0,
+    max_num: int | None = None,
+    quad_segs: int = 16,
+):
+    wire = rectangle(width, height)
+    modulation = superellipse(mod_depth * 2, mod_width, squareness, quad_segs)
+    offset = (offset, offset) if isinstance(offset, float | int) else offset
+
+    nleft = floor((height - offset[0] - mod_width) / period) + 1
+    nright = floor((height - offset[1] - mod_width) / period) + 1
+    if max_num is not None:
+        nleft = min(nleft, max_num)
+        nright = min(nright, max_num)
+
+    if side.lower() in ("left", "both"):
+        for i in range(nleft):
+            y = height / 2 - offset[0] - i * period - mod_width / 2
+            cur_mod = modulation.translate(-0.5 * width, y)
+            wire = wire.difference(cur_mod)
+
+    if side.lower() in ("right", "both"):
+        for i in range(nright):
+            y = height / 2 - offset[0] - i * period - mod_width / 2
+            cur_mod = modulation.translate(0.5 * width, y)
+            wire = wire.difference(cur_mod)
+
+    return wire
