@@ -132,3 +132,11 @@ class Shape:
         new_geom = rotate(self.to_shapely(), angle, origin=origin)
         new_extent = Extent(*new_geom.bounds)
         return Shape(new_geom, new_extent)
+
+    def get_centre(self):
+        return self.get_extent().get_centre()
+
+    def centre(self, x: float = 0.0, y: float = 0.0):
+        centre = self.get_centre()
+        offset_x, offset_y = (x - centre[0], y - centre[1])
+        return self.translate(offset_x, offset_y)

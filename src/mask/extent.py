@@ -16,8 +16,8 @@ class Extent(NamedTuple):
     def merge(self, other: Extent):
         x0 = min(self.x0, other.x0)
         y0 = min(self.y0, other.y0)
-        x1 = min(self.x1, other.x1)
-        y1 = min(self.y1, other.y1)
+        x1 = max(self.x1, other.x1)
+        y1 = max(self.y1, other.y1)
         return Extent(x0, y0, x1, y1)
 
     def scale(
