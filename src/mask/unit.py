@@ -1,7 +1,6 @@
 import numpy as np
-from shapely import MultiPolygon, Point, Polygon, box
-from shapely.affinity import rotate, scale, skew, translate
-from shapely.ops import unary_union
+from shapely import Point, Polygon, box
+from shapely.affinity import scale, skew
 
 from .shape import Shape
 
