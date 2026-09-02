@@ -18,10 +18,10 @@ TileFunc = Callable[[UnitsArg, PeriodsArg], Shape]
 def _build(tile: tiling.Tiling, units: Sequence[Shape], periods: Sequence[float]) -> Shape:
     positions, rotations, indices = tile.get_cells(*periods)
 
-    unique_rotations = np.unique(indices)
-    if len(unique_rotations) != len(units):
+    n_unique_rotations = len(np.unique(indices))
+    if n_unique_rotations != len(units):
         raise ValueError(
-            f"Tiling has {len(unique_rotations)} distinct orientations "
+            f"Tiling has {n_unique_rotations} distinct orientations "
             f"but {len(units)} unit shapes were given."
         )
 
