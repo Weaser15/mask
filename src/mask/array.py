@@ -25,17 +25,14 @@ class BuildOptions(TypedDict, total=False):
     view_offset: tuple[float, float]
 
 
-def _build(
+def _build_cell(
     tile: tiling.Tiling,
     units: UnitsArg,
     periods: PeriodsArg,
-    *,
-    nx: int = 1,
-    ny: int = 1,
-    rotation: float = 0.0,
-    shift: float = 0.0,
-    view_offset: tuple[float, float] = (0.0, 0.0),
-) -> Shape:
+    rotation: float,
+    shift: float,
+    view_offset: tuple[float, float],
+):
     # Handle excess / missing units and periods
     build_units = single_to_tuple(units, Shape, tile.get_n_units())
     build_periods = single_to_tuple(periods, Real, tile.get_n_periods())
@@ -48,11 +45,31 @@ def _build(
             f"Tiling has {n_unique_rotations} distinct orientations "
             f"but {len(build_units)} unit shapes were given."
         )
+    extent = tile.get_extent(*build_periods)
+
+    # Handle view_offset and rotation
+    positions += (view_offset[0] * extent.get_width(), view_offset[1] * extent.get_height())
+    rotations += rotation
 
     array = empty_shape
     for p, r, i in zip(positions, rotations, indices):
         array = array.union(build_units[i].translate(*p).rotate(r))
-    return array.wrap_inside_extent(tile.get_extent(*build_periods))
+    return array.wrap_inside_extent(extent)
+
+
+def _build(
+    tile: tiling.Tiling,
+    units: UnitsArg,
+    periods: PeriodsArg,
+    *,
+    nx: int = 1,
+    ny: int = 1,
+    rotation: float = 0.0,
+    shift: float = 0.0,
+    view_offset: tuple[float, float] = (0.0, 0.0),
+) -> Shape:
+    cell = _build_cell(tile, units, periods, rotation, shift, view_offset)
+    return cell
 
 
 def square_spin_ice(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:

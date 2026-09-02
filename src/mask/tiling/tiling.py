@@ -35,10 +35,10 @@ class Tiling:
             ]
         )
         assert isinstance(positions, np.ndarray)
-        return positions
+        return positions.copy()
 
     def get_rotations(self, a1: float, a2: float | None = None, a3: float | None = None):
-        return self._rotations
+        return self._rotations.copy()
 
     def get_extent(self, a1: float, a2: float | None = None, a3: float | None = None):
         return Extent.from_sizes(self._get_sizes(a1, a2, a3))
