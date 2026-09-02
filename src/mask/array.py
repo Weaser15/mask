@@ -28,7 +28,9 @@ def _build(tile: tiling.Tiling, units: Sequence[Shape], periods: Sequence[float]
         )
 
     array = empty_shape
+    # print(len(positions))
     for rot, pos in zip(rotations, positions):
+        # print(rot, pos)
         index = int(np.where(unique_rotations == rot)[0][0])
         array = array.union(units[index].translate(*pos).rotate(rot))
     return array.wrap_inside_extent(extent)
@@ -36,19 +38,26 @@ def _build(tile: tiling.Tiling, units: Sequence[Shape], periods: Sequence[float]
 
 def square_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
     """Square spin ice array."""
-    num = 2
     return _build(
         tiling.square_spin_ice,
-        single_to_tuple(units, Shape, num),
-        single_to_tuple(periods, Real, num),  # type: ignore
+        single_to_tuple(units, Shape, 2),
+        single_to_tuple(periods, Real, 2),  # type: ignore
+    )
+
+
+def trigonal_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
+    """Trigonal spin ice array."""
+    return _build(
+        tiling.trigonal_spin_ice,
+        single_to_tuple(units, Shape, 3),
+        single_to_tuple(periods, Real, 1),  # type: ignore
     )
 
 
 def rectangular(units: UnitsArg, periods: PeriodsArg) -> Shape:
     """Rectangular tiling."""
-    num = 1
     return _build(
         tiling.rectangular,
-        single_to_tuple(units, Shape, num),
-        single_to_tuple(periods, Real, num),  # type: ignore
+        single_to_tuple(units, Shape, 1),
+        single_to_tuple(periods, Real, 1),  # type: ignore
     )

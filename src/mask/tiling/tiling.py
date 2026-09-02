@@ -26,8 +26,10 @@ class Tiling:
         periods = _fill_periods(a1, a2, a3)
         positions = sum(
             [
-                period * np.asarray(vector) * np.asarray(positions)[:, np.newaxis]
-                for (period, vector, positions) in zip(periods, self._vectors, self._coefficients)
+                period * np.asarray(vector) * np.asarray(coeff)[:, np.newaxis]
+                for (period, vector, coeff) in zip(
+                    periods, self._vectors, np.asarray(self._coefficients).T
+                )
             ]
         )
         assert isinstance(positions, np.ndarray)
@@ -41,25 +43,57 @@ class Tiling:
 
     def _get_sizes(self, a1: float, a2: float | None = None, a3: float | None = None):
         periods = _fill_periods(a1, a2, a3)
-        sizes = sum(
-            [period * np.asarray(factor) for (period, factor) in zip(periods, self._size_factors)]
+
+        axes_contributions = (
+            np.asarray(self._size_factors) * np.asarray(self._vectors).T * np.asarray(periods)
         )
+        sizes = axes_contributions.sum(axis=1)
         assert isinstance(sizes, np.ndarray)
         return sizes[0], sizes[1]
 
 
-# Use angles between [-90, 0]. This way -90 (horizontal) will always be first
-# and those closest to 0 (horizontal) will be last.
+def _get_av(angle: float):
+    """Produces vectors for an angle.
+    Produces [1.0, 0.0] for 0 and [0.0, 1.0] for 90.
+    """
+    return np.round([np.cos(np.deg2rad(angle)), np.sin(np.deg2rad(angle))], 5)
 
-_vectors = [[1.0, 0.0], [0.0, 1.0]]
+
+# Use angles between [0, 180]. This way 0 (horizontal) will always be first
+# and those closest to 90 (vertical) will be last.
+
+_a1, _a2 = 0, 90
+_vectors = [_get_av(_a1), _get_av(_a2)]
 _coefficients = [[0.0], [0.0]]
-_rotations = [0.0]
+_rotations = [_a1]
 _size_factors = [[1.0, 0.0], [0.0, 1.0]]
 rectangular = Tiling(_vectors, _coefficients, _rotations, _size_factors)
 
 
-_vectors = [[1.0, 0.0], [0.0, 1.0]]
+_a1, _a2 = 0.0, 90.0
+_vectors = [_get_av(_a1), _get_av(_a2)]
 _coefficients = [[0.5, 0.0], [0.0, 0.5]]
-_rotations = [-90.0, 0.0]
+_rotations = [_a1, _a2]
 _size_factors = [[1.0, 0.0], [0.0, 1.0]]
 square_spin_ice = Tiling(_vectors, _coefficients, _rotations, _size_factors)
+
+
+_a1, _a2, _a3 = 0.0, 60.0, 120.0
+_vectors = [_get_av(_a1), _get_av(_a2), _get_av(_a3)]
+_coefficients = [
+    [0.5, 0.0, 0.0],
+    [0.0, 0.5, 0.0],
+    [0.0, 0.0, 0.5],
+    [0.0, -0.5, 0.0],
+    [0.0, 0.0, -0.5],
+    [-0.5, 0.0, 1.0],
+]
+_rotations = [_a1, _a2, _a3, _a2, _a3, _a1]
+_size_factors = [[1.0, 0.0, 0.0], [0.0, 2.0, 0.0]]
+trigonal_spin_ice = Tiling(_vectors, _coefficients, _rotations, _size_factors)
+
+# _vectors = [[1.0, 0.0], [0.0, 1.0]]
+# _coefficients = [[0.5, 0.0], [0.0, 0.5]]
+# _rotations = [-90.0, 0.0]
+# _size_factors = [[1.0, 0.0], [0.0, 1.0]]
+# square_spin_ice = Tiling(_vectors, _coefficients, _rotations, _size_factors)
