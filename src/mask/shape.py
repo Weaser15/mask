@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+from math import ceil, floor
+
 from pathlib import Path
 from typing import Any, Literal
 
 import numpy as np
 from matplotlib.axes import Axes
-from shapely import MultiPolygon, Polygon
+from shapely import MultiPolygon, Polygon, box, get_parts
 from shapely.affinity import rotate, scale, translate
+from shapely.ops import unary_union
 
 from .extent import Extent
 from .utils import geometry_to_image, get_image_dimensions, plot_geometry
@@ -140,3 +143,34 @@ class Shape:
         centre = self.get_centre()
         offset_x, offset_y = (x - centre[0], y - centre[1])
         return self.translate(offset_x, offset_y)
+
+    def wrap_inside_extent(self, extent: Extent | None = None) -> Shape:
+        extent = self.get_extent() if extent is None else extent
+        poly = self.to_shapely()
+        w, h = extent.get_width(), extent.get_height()
+        minx, miny, maxx, maxy = poly.bounds
+
+        i0, i1 = floor((minx - extent.x0) / w), ceil((maxx - extent.x0) / w)
+        j0, j1 = floor((miny - extent.y0) / h), ceil((maxy - extent.y0) / h)
+
+        parts = []
+        for i in range(i0, max(i1, i0 + 1)):
+            for j in range(j0, max(j1, j0 + 1)):
+                cell = box(
+                    extent.x0 + i * w,
+                    extent.y0 + j * h,
+                    extent.x0 + (i + 1) * w,
+                    extent.y0 + (j + 1) * h,
+                )
+                piece = poly.intersection(cell)
+                if piece.is_empty:
+                    continue
+                parts.extend(
+                    translate(g, -i * w, -j * h)
+                    for g in get_parts(piece)
+                    if g.geom_type in ("Polygon", "MultiPolygon")
+                )
+
+        wrapped = unary_union(parts)
+        assert isinstance(wrapped, Polygon | MultiPolygon)
+        return Shape(wrapped, extent=extent)
