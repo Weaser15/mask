@@ -17,7 +17,7 @@ class Tiling:
         rotations: Iterable[float],
         size_factors: Iterable[Iterable[float]],
     ):
-        self._vectors = vectors
+        self._vectors = list(vectors)
         self._coefficients = coefficients
         self._rotations = rotations
         self._size_factors = size_factors
@@ -42,7 +42,7 @@ class Tiling:
         return Extent.from_sizes(self._get_sizes(a1, a2, a3))
 
     def _get_sizes(self, a1: float, a2: float | None = None, a3: float | None = None):
-        periods = _fill_periods(a1, a2, a3)
+        periods = _fill_periods(a1, a2, a3)[: len(self._vectors)]
 
         axes_contributions = (
             np.asarray(self._size_factors) * np.asarray(self._vectors).T * np.asarray(periods)
@@ -106,3 +106,35 @@ _coefficients = [
 _rotations = [_a1, _a2, _a3, _a2, _a3, _a1]
 _size_factors = [[2.0, 2.0, 0.0], [0.0, 2.0, 0.0]]
 kagome_spin_ice = Tiling(_vectors, _coefficients, _rotations, _size_factors)
+
+_a1, _a2 = 0.0, 90.0
+_vectors = [_get_av(_a1), _get_av(_a2)]
+_coefficients = [
+    [-1.5, 0.0],
+    [-0.5, 0.0],
+    [0.5, 0.0],
+    [1.5, 0.0],
+    [0.5, -1.0],
+    [1.5, -1.0],
+    [-1.5, -2.0],
+    [-0.5, -2.0],
+    [0.5, -2.0],
+    [1.5, -2.0],
+    [-0.5, 1.0],
+    [-1.5, 1.0],
+    [-2.0, -1.5],
+    [-2.0, -0.5],
+    [-2.0, 0.5],
+    [-2.0, 1.5],
+    [-1.0, -1.5],
+    [-1.0, -0.5],
+    [0.0, -1.5],
+    [0.0, -0.5],
+    [0.0, 0.5],
+    [0.0, 1.5],
+    [1.0, 0.5],
+    [1.0, 1.5],
+]
+_rotations = [*([_a1] * 12), *([_a2] * 12)]
+_size_factors = [[4.0, 0.0], [0.0, 4.0]]
+square_spin_ice = Tiling(_vectors, _coefficients, _rotations, _size_factors)
