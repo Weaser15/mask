@@ -46,15 +46,15 @@ def _build_cell(
             f"but {len(build_units)} unit shapes were given."
         )
     extent = tile.get_extent(*build_periods)
-    print(positions)
     # Handle view_offset and rotation
     positions += (view_offset[0] * extent.get_width(), view_offset[1] * extent.get_height())
     rotations += rotation
 
-    array = empty_shape
-    for p, r, i in zip(positions, rotations, indices):
-        array = array.union(build_units[i].translate(*p).rotate(r))
-    return array.wrap_inside_extent(extent)
+    array = empty_shape.union(
+        [build_units[i].translate(*p).rotate(r) for p, r, i in zip(positions, rotations, indices)]
+    )
+    return array, extent
+    # return array.wrap_inside_extent(extent), extent
 
 
 def _build(
@@ -68,8 +68,12 @@ def _build(
     shift: float = 0.0,
     view_offset: tuple[float, float] = (0.0, 0.0),
 ) -> Shape:
-    cell = _build_cell(tile, units, periods, rotation, shift, view_offset)
-    return cell
+    cell, cell_extent = _build_cell(tile, units, periods, rotation, shift, view_offset)
+    w, h = cell_extent.get_sizes()
+    array = empty_shape.union([cell.translate(i * w, j * h) for i in range(nx) for j in range(ny)])
+    array = array.wrap_inside_extent(cell_extent.scale((nx, ny)))
+    # print(len(array.to_shapely().geoms))
+    return array
 
 
 def square_spin_ice(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:
