@@ -72,6 +72,23 @@ def geometry_to_image(
     return Image.fromarray(image_array, mode="L").convert("1")
 
 
+def get_shift_offsets(
+    shift: float, units: Sequence[Shape] | Shape
+) -> tuple[np.ndarray, np.ndarray]:
+    # Angle offset
+    try:
+        units[0]  # type: ignore
+    except TypeError:
+        units = [units]  # type: ignore
+    widths = np.array([u.get_extent().get_width() for u in units])  # type: ignore
+    heights = np.array([u.get_extent().get_height() for u in units])  # type: ignore
+    angle_offsets = np.rad2deg(np.arctan(-heights * shift / widths))
+
+    # Period offsets
+    period_offsets = np.sqrt(widths**2 + heights**2) - widths
+    return period_offsets, angle_offsets
+
+
 def plot_geometry(
     geom: Polygon | MultiPolygon | Shape,
     ax: Axes | None = None,

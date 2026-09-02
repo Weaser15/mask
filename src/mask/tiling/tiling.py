@@ -28,14 +28,18 @@ class Tiling:
 
     def get_positions(self, a1: float, a2: float | None = None, a3: float | None = None):
         periods = _fill_periods(a1, a2, a3)
+        vectors = self.get_vectors()
         positions = sum(
             [
                 period * vector * coeff[:, np.newaxis]
-                for (period, vector, coeff) in zip(periods, self._vectors, self._coefficients.T)
+                for (period, vector, coeff) in zip(periods, vectors, self._coefficients.T)
             ]
         )
         assert isinstance(positions, np.ndarray)
         return positions.copy()
+
+    def get_vectors(self):
+        return self._vectors.copy()
 
     def get_rotations(self, a1: float, a2: float | None = None, a3: float | None = None):
         return self._rotations.copy()

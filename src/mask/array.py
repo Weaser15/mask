@@ -20,7 +20,6 @@ TileFunc = Callable[[UnitsArg, PeriodsArg], Shape]
 class BuildOptions(TypedDict, total=False):
     nx: int
     ny: int
-    shift: float
     rotation: float
     view_offset: tuple[float, float]
 
@@ -30,7 +29,6 @@ def _build_cell(
     units: UnitsArg,
     periods: PeriodsArg,
     rotation: float,
-    shift: float,
     view_offset: tuple[float, float],
 ):
     # Handle excess / missing units and periods
@@ -65,10 +63,9 @@ def _build(
     nx: int = 1,
     ny: int = 1,
     rotation: float = 0.0,
-    shift: float = 0.0,
     view_offset: tuple[float, float] = (0.0, 0.0),
 ) -> Shape:
-    cell, cell_extent = _build_cell(tile, units, periods, rotation, shift, view_offset)
+    cell, cell_extent = _build_cell(tile, units, periods, rotation, view_offset)
     w, h = cell_extent.get_sizes()
     array = empty_shape.union([cell.translate(i * w, j * h) for i in range(nx) for j in range(ny)])
     array = array.wrap_inside_extent(cell_extent.scale((nx, ny)))
