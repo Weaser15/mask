@@ -19,10 +19,10 @@ class Tiling:
         n_periods: int,
         n_units: int,
     ):
-        self._vectors = list(vectors)
-        self._coefficients = coefficients
-        self._rotations = rotations
-        self._size_factors = size_factors
+        self._vectors = np.asarray(vectors)
+        self._coefficients = np.asarray(coefficients)
+        self._rotations = np.asarray(rotations)
+        self._size_factors = np.asarray(size_factors)
         self._n_periods = n_periods
         self._n_units = n_units
 
@@ -30,10 +30,8 @@ class Tiling:
         periods = _fill_periods(a1, a2, a3)
         positions = sum(
             [
-                period * np.asarray(vector) * np.asarray(coeff)[:, np.newaxis]
-                for (period, vector, coeff) in zip(
-                    periods, self._vectors, np.asarray(self._coefficients).T
-                )
+                period * vector * coeff[:, np.newaxis]
+                for (period, vector, coeff) in zip(periods, self._vectors, self._coefficients.T)
             ]
         )
         assert isinstance(positions, np.ndarray)
@@ -46,7 +44,7 @@ class Tiling:
         return Extent.from_sizes(self._get_sizes(a1, a2, a3))
 
     def get_indices(self, a1: float, a2: float | None = None, a3: float | None = None):
-        rotations = np.asarray(self.get_rotations(a1, a2, a3))
+        rotations = self.get_rotations(a1, a2, a3).round(9)
         unique_rotations = np.unique(rotations)
         num = len(unique_rotations)
         return np.sum(
@@ -63,9 +61,7 @@ class Tiling:
     def _get_sizes(self, a1: float, a2: float | None = None, a3: float | None = None):
         periods = _fill_periods(a1, a2, a3)[: len(self._vectors)]
 
-        axes_contributions = (
-            np.asarray(self._size_factors) * np.asarray(self._vectors).T * np.asarray(periods)
-        )
+        axes_contributions = self._size_factors * self._vectors.T * np.asarray(periods)
         sizes = axes_contributions.sum(axis=1)
         assert isinstance(sizes, np.ndarray)
         return sizes[0], sizes[1]
