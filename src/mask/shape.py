@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from math import ceil, floor
-
 from pathlib import Path
 from typing import Any, Literal
 
