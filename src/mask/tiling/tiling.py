@@ -50,7 +50,8 @@ class Tiling:
         unique_rotations = np.unique(rotations)
         num = len(unique_rotations)
         return np.sum(
-            (rotations == unique_rotations[:, np.newaxis]) * np.arange(num)[:, np.newaxis], axis=0
+            np.isclose(rotations, unique_rotations[:, np.newaxis]) * np.arange(num)[:, np.newaxis],
+            axis=0,
         )
 
     def get_cells(self, a1: float, a2: float | None = None, a3: float | None = None):
