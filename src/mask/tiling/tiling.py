@@ -41,6 +41,14 @@ class Tiling:
     def get_extent(self, a1: float, a2: float | None = None, a3: float | None = None):
         return Extent.from_sizes(self._get_sizes(a1, a2, a3))
 
+    def get_indices(self, a1: float, a2: float | None = None, a3: float | None = None):
+        rotations = np.asarray(self.get_rotations(a1, a2, a3))
+        unique_rotations = np.unique(rotations)
+        num = len(unique_rotations)
+        return np.sum(
+            (rotations == unique_rotations[:, np.newaxis]) * np.arange(num)[:, np.newaxis], axis=0
+        )
+
     def _get_sizes(self, a1: float, a2: float | None = None, a3: float | None = None):
         periods = _fill_periods(a1, a2, a3)[: len(self._vectors)]
 
