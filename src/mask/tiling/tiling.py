@@ -49,6 +49,12 @@ class Tiling:
             (rotations == unique_rotations[:, np.newaxis]) * np.arange(num)[:, np.newaxis], axis=0
         )
 
+    def get_cells(self, a1: float, a2: float | None = None, a3: float | None = None):
+        positions = self.get_positions(a1, a2, a3)
+        rotations = self.get_rotations(a1, a2, a3)
+        indices = self.get_indices(a1, a2, a3)
+        return positions, rotations, indices
+
     def _get_sizes(self, a1: float, a2: float | None = None, a3: float | None = None):
         periods = _fill_periods(a1, a2, a3)[: len(self._vectors)]
 
