@@ -66,7 +66,16 @@ def kagome_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
 def shakti_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
     """Shakti spin ice array."""
     return _build(
-        tiling.square_spin_ice,
+        tiling.shakti_spin_ice,
+        single_to_tuple(units, Shape, 2),
+        single_to_tuple(periods, Real, 2),  # type: ignore
+    )
+
+
+def tetris_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
+    """Tetris spin ice array."""
+    return _build(
+        tiling.tetris_spin_ice,
         single_to_tuple(units, Shape, 2),
         single_to_tuple(periods, Real, 2),  # type: ignore
     )
