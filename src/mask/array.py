@@ -54,6 +54,15 @@ def trigonal_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
     )
 
 
+def kagome_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
+    """Kagome spin ice array."""
+    return _build(
+        tiling.kagome_spin_ice,
+        single_to_tuple(units, Shape, 3),
+        single_to_tuple(periods, Real, 1),  # type: ignore
+    )
+
+
 def rectangular(units: UnitsArg, periods: PeriodsArg) -> Shape:
     """Rectangular tiling."""
     return _build(

@@ -92,8 +92,17 @@ _rotations = [_a1, _a2, _a3, _a2, _a3, _a1]
 _size_factors = [[1.0, 0.0, 0.0], [0.0, 2.0, 0.0]]
 trigonal_spin_ice = Tiling(_vectors, _coefficients, _rotations, _size_factors)
 
-# _vectors = [[1.0, 0.0], [0.0, 1.0]]
-# _coefficients = [[0.5, 0.0], [0.0, 0.5]]
-# _rotations = [-90.0, 0.0]
-# _size_factors = [[1.0, 0.0], [0.0, 1.0]]
-# square_spin_ice = Tiling(_vectors, _coefficients, _rotations, _size_factors)
+
+_a1, _a2, _a3 = 0.0, 60.0, 120.0
+_vectors = [_get_av(_a1), _get_av(_a2), _get_av(_a3)]
+_coefficients = [
+    [0.0, 0.0, 0.0],
+    [0.5, 0.5, 0.0],
+    [0.5, 0.0, -0.5],
+    [-0.5, -0.5, 0.0],
+    [-0.5, 0.0, 0.5],
+    [1.0, 1.0, 0.0],
+]
+_rotations = [_a1, _a2, _a3, _a2, _a3, _a1]
+_size_factors = [[2.0, 2.0, 0.0], [0.0, 2.0, 0.0]]
+kagome_spin_ice = Tiling(_vectors, _coefficients, _rotations, _size_factors)
