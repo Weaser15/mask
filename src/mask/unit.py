@@ -45,7 +45,11 @@ def rectangle(width: float, height: float, rx: float = 0.0, ry: float = 0.0, qua
 
 def parallelogram(width: float, height: float, offset: float = 0.0, angle: float | None = None):
     # Use angle if provided, otherwise compute the angle from the offset.
-    xs = np.rad2deg(np.arctan(offset / width)) if angle is None else angle
+    if angle:
+        xs = angle
+        offset = np.tan(np.deg2rad(angle)) * height
+    else:
+        xs = np.rad2deg(np.arctan(offset / width))
     # The parallelogram is created by making a smaller rectangle then skewing.
     r_width = width - offset
     parallelogram = box(-0.5 * r_width, -0.5 * height, 0.5 * r_width, 0.5 * height)
