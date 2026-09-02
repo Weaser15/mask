@@ -173,3 +173,6 @@ class Shape:
         wrapped = unary_union(parts)
         assert isinstance(wrapped, Polygon | MultiPolygon)
         return Shape(wrapped, extent=extent)
+
+
+empty_shape = Shape(Polygon([]), extent=Extent(0.0, 0.0, 0.0, 0.0))

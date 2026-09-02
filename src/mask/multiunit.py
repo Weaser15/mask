@@ -1,6 +1,4 @@
-from shapely import Polygon
-
-from .shape import Shape
+from .shape import Shape, empty_shape
 
 
 def logic_dots(unit: Shape, period: float | tuple[float, float], ndots: int):
@@ -36,7 +34,7 @@ def spiral(unit1: Shape, unit2: Shape, spacing: float | tuple[float, float]):
         (-x_unit, -y_unit_2),
     ]
 
-    spiral = Shape(Polygon([]))
+    spiral = empty_shape
     rotations = [90.0, 0.0, 90.0, 0.0]
     for i, (translation, rotation) in enumerate(zip(translations, rotations)):
         unit = unit1 if i % 2 == 0 else unit2

@@ -24,12 +24,14 @@ class Tiling:
 
     def get_positions(self, a1: float, a2: float | None = None, a3: float | None = None):
         periods = _fill_periods(a1, a2, a3)
-        return sum(
+        positions = sum(
             [
                 period * np.asarray(vector) * np.asarray(positions)[:, np.newaxis]
                 for (period, vector, positions) in zip(periods, self._vectors, self._coefficients)
             ]
         )
+        assert isinstance(positions, np.ndarray)
+        return positions
 
     def get_rotations(self, a1: float, a2: float | None = None, a3: float | None = None):
         return self._rotations
@@ -46,6 +48,9 @@ class Tiling:
         return sizes[0], sizes[1]
 
 
+# Use angles between [-90, 0]. This way -90 (horizontal) will always be first
+# and those closest to 0 (horizontal) will be last.
+
 _vectors = [[1.0, 0.0], [0.0, 1.0]]
 _coefficients = [[0.0], [0.0]]
 _rotations = [0.0]
@@ -54,7 +59,7 @@ rectangular = Tiling(_vectors, _coefficients, _rotations, _size_factors)
 
 
 _vectors = [[1.0, 0.0], [0.0, 1.0]]
-_coefficients = [[0.0, 1.0, 0.0, -1.0], [1.0, 0.0, -1.0, 0.0]]
-_rotations = [0.0, 90.0, 180.0, 270.0]
-_size_factors = [[2.0, 0.0], [0.0, 2.0]]
+_coefficients = [[0.5, 0.0], [0.0, 0.5]]
+_rotations = [-90.0, 0.0]
+_size_factors = [[1.0, 0.0], [0.0, 1.0]]
 square_spin_ice = Tiling(_vectors, _coefficients, _rotations, _size_factors)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,6 +14,20 @@ from shapely import (
     Polygon,
     contains_xy,
 )
+
+T = TypeVar("T")
+
+
+def single_to_tuple(value: T | Sequence[T], typ: type[T], length: int) -> tuple[T, ...]:
+    if isinstance(value, typ):
+        return (value,) * length
+    seq = cast("Sequence[T]", value)
+    if not seq:
+        raise ValueError("Cannot pad an empty sequence!")
+    if len(seq) < length:
+        return (*seq, *(seq[-1],) * (length - len(seq)))
+    return tuple(seq)[:length]
+
 
 if TYPE_CHECKING:
     from .extent import Extent
