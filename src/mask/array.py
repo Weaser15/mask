@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from numbers import Real
-from typing import cast
+from typing import TypedDict, cast
 
 import numpy as np
+from typing_extensions import Unpack
 
 import mask.tiling.tiling as tiling
 
@@ -16,7 +17,25 @@ PeriodsArg = float | Sequence[float]
 TileFunc = Callable[[UnitsArg, PeriodsArg], Shape]
 
 
-def _build(tile: tiling.Tiling, units: UnitsArg, periods: PeriodsArg) -> Shape:
+class BuildOptions(TypedDict, total=False):
+    nx: int
+    ny: int
+    shift: float
+    rotation: float
+    view_offset: tuple[float, float]
+
+
+def _build(
+    tile: tiling.Tiling,
+    units: UnitsArg,
+    periods: PeriodsArg,
+    *,
+    nx: int = 1,
+    ny: int = 1,
+    rotation: float = 0.0,
+    shift: float = 0.0,
+    view_offset: tuple[float, float] = (0.0, 0.0),
+) -> Shape:
     # Handle excess / missing units and periods
     build_units = single_to_tuple(units, Shape, tile.get_n_units())
     build_periods = single_to_tuple(periods, Real, tile.get_n_periods())
@@ -36,31 +55,33 @@ def _build(tile: tiling.Tiling, units: UnitsArg, periods: PeriodsArg) -> Shape:
     return array.wrap_inside_extent(tile.get_extent(*build_periods))
 
 
-def square_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
+def square_spin_ice(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:
     """Square spin ice array."""
-    return _build(tiling.square_spin_ice, units, periods)
+    return _build(tiling.square_spin_ice, units, periods, **options)
 
 
-def trigonal_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
+def trigonal_spin_ice(
+    units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]
+) -> Shape:
     """Trigonal spin ice array."""
-    return _build(tiling.trigonal_spin_ice, units, periods)
+    return _build(tiling.trigonal_spin_ice, units, periods, **options)
 
 
-def kagome_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
+def kagome_spin_ice(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:
     """Kagome spin ice array."""
-    return _build(tiling.kagome_spin_ice, units, periods)
+    return _build(tiling.kagome_spin_ice, units, periods, **options)
 
 
-def shakti_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
+def shakti_spin_ice(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:
     """Shakti spin ice array."""
-    return _build(tiling.shakti_spin_ice, units, periods)
+    return _build(tiling.shakti_spin_ice, units, periods, **options)
 
 
-def tetris_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
+def tetris_spin_ice(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:
     """Tetris spin ice array."""
-    return _build(tiling.tetris_spin_ice, units, periods)
+    return _build(tiling.tetris_spin_ice, units, periods, **options)
 
 
-def rectangular(units: UnitsArg, periods: PeriodsArg) -> Shape:
+def rectangular(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:
     """Rectangular tiling."""
-    return _build(tiling.rectangular, units, periods)
+    return _build(tiling.rectangular, units, periods, **options)
