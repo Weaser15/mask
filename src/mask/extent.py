@@ -13,11 +13,15 @@ class Extent(NamedTuple):
     x1: float
     y1: float
 
-    def merge(self, other: Extent):
-        x0 = min(self.x0, other.x0)
-        y0 = min(self.y0, other.y0)
-        x1 = max(self.x1, other.x1)
-        y1 = max(self.y1, other.y1)
+    def merge(self, other: Extent | list[Extent]):
+        if isinstance(other, Extent):
+            other = [other]
+        extents: list[Extent] = [self, *other]
+
+        x0 = min(e.x0 for e in extents)
+        y0 = min(e.y0 for e in extents)
+        x1 = max(e.x1 for e in extents)
+        y1 = max(e.y1 for e in extents)
         return Extent(x0, y0, x1, y1)
 
     def scale(

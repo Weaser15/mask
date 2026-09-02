@@ -46,7 +46,7 @@ def _build_cell(
             f"but {len(build_units)} unit shapes were given."
         )
     extent = tile.get_extent(*build_periods)
-
+    print(positions)
     # Handle view_offset and rotation
     positions += (view_offset[0] * extent.get_width(), view_offset[1] * extent.get_height())
     rotations += rotation

@@ -70,20 +70,21 @@ class Shape:
         return image
 
     def union(
-        self, other: Shape, extent: Literal["merge", "self", "other", "new"] = "merge"
+        self, other: Shape | list[Shape], extent: Literal["merge", "self", "new"] = "merge"
     ) -> Shape:
-        new_geom = self.to_shapely().union(other.to_shapely())
+        if isinstance(other, Shape):
+            other = [other]
+        shapes: list[Shape] = [self, *other]
+        new_geom = unary_union([s.to_shapely() for s in shapes])
         assert isinstance(new_geom, Polygon | MultiPolygon)
         if extent.lower() == "merge":
-            new_extent = self.get_extent().merge(other.get_extent())
+            new_extent = self.get_extent().merge([s.get_extent() for s in shapes])
         elif extent.lower() == "new":
             new_extent = Extent(*new_geom.bounds)
         elif extent.lower() == "self":
             new_extent = self.get_extent()
-        elif extent.lower() == "other":
-            new_extent = other.get_extent()
         else:
-            message = f"extent must be one of (merge, new, self, other) not {extent}"
+            message = f"extent must be one of (merge, new, self) not {extent}"
             raise KeyError(message)
         return Shape(new_geom, new_extent)
 
