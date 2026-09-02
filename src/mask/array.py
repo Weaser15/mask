@@ -16,11 +16,9 @@ TileFunc = Callable[[UnitsArg, PeriodsArg], Shape]
 
 
 def _build(tile: tiling.Tiling, units: Sequence[Shape], periods: Sequence[float]) -> Shape:
-    rotations = tile.get_rotations(*periods)
-    positions = tile.get_positions(*periods)
-    extent = tile.get_extent(*periods)
+    positions, rotations, indices = tile.get_cells(*periods)
 
-    unique_rotations = np.unique(np.asarray(rotations))
+    unique_rotations = np.unique(indices)
     if len(unique_rotations) != len(units):
         raise ValueError(
             f"Tiling has {len(unique_rotations)} distinct orientations "
@@ -28,12 +26,9 @@ def _build(tile: tiling.Tiling, units: Sequence[Shape], periods: Sequence[float]
         )
 
     array = empty_shape
-    # print(len(positions))
-    for rot, pos in zip(rotations, positions):
-        # print(rot, pos)
-        index = int(np.where(unique_rotations == rot)[0][0])
-        array = array.union(units[index].translate(*pos).rotate(rot))
-    return array.wrap_inside_extent(extent)
+    for p, r, i in zip(positions, rotations, indices):
+        array = array.union(units[i].translate(*p).rotate(r))
+    return array.wrap_inside_extent(tile.get_extent(*periods))
 
 
 def square_spin_ice(units: UnitsArg, periods: PeriodsArg) -> Shape:
