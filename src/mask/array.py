@@ -103,3 +103,8 @@ def tetris_spin_ice(units: UnitsArg, periods: PeriodsArg, **options: Unpack[Buil
 def rectangular(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:
     """Rectangular tiling."""
     return _build(tiling.rectangular, units, periods, **options)
+
+
+def rhombic(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:
+    """Rhombic tiling."""
+    return _build(tiling.rhombic, units, periods, **options)
