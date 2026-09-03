@@ -242,3 +242,12 @@ _rotations = [_a1] * 4
 _size_factors = [[2.0, 2.0, 0.0], [0.0, 2.0, 0.0]]
 _n_periods, _n_units = (1, 1)
 honeycomb = Tiling(_vectors, _coefficients, _rotations, _size_factors, _n_periods, _n_units)
+
+
+_a1, _a2 = 0.0, 90.0
+_vectors = [_get_av(_a1), _get_av(_a2)]
+_coefficients = [[0.0, 0.0], [1.0, 1.0], [1.0, 0.0], [0.0, 1.0]]
+_rotations = [_a1, _a1, _a2, _a2]
+_size_factors = [[2.0, 0.0], [0.0, 2.0]]
+_n_periods, _n_units = (2, 2)
+multi_rectangular = Tiling(_vectors, _coefficients, _rotations, _size_factors, _n_periods, _n_units)
