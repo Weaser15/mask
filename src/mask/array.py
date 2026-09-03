@@ -108,3 +108,8 @@ def rectangular(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOpt
 def rhombic(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:
     """Rhombic tiling."""
     return _build(tiling.rhombic, units, periods, **options)
+
+
+def honeycomb(units: UnitsArg, periods: PeriodsArg, **options: Unpack[BuildOptions]) -> Shape:
+    """Honeycomb tiling."""
+    return _build(tiling.honeycomb, units, periods, **options)
