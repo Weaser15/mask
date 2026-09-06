@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from numbers import Real
-from typing import TypedDict, cast
+from typing import TypedDict, Unpack, cast
 
 import numpy as np
-from typing_extensions import Unpack
 
 import mask.tiling.tiling as tiling
 
