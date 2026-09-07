@@ -175,5 +175,16 @@ class Shape:
         assert isinstance(wrapped, Polygon | MultiPolygon)
         return Shape(wrapped, extent=extent)
 
+    def invert(self, buffer: float | None = None, extent: Extent | None = None):
+        if extent is None:
+            extent = self.get_extent()
+
+        if buffer is not None:
+            extent = extent.buffer(buffer)
+
+        new_geom = box(*extent).difference(self.to_shapely())
+        assert isinstance(new_geom, Polygon | MultiPolygon)
+        return Shape(new_geom, extent)
+
 
 empty_shape = Shape(Polygon([]), extent=Extent(0.0, 0.0, 0.0, 0.0))
