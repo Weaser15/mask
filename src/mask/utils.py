@@ -18,7 +18,7 @@ from shapely import (
 T = TypeVar("T")
 
 
-def single_to_tuple(value: T | Sequence[T], typ: type[T], length: int) -> tuple[T, ...]:
+def single_to_tuple[T](value: T | Sequence[T], typ: type[T], length: int) -> tuple[T, ...]:
     if isinstance(value, typ):
         return (value,) * length
     seq = cast("Sequence[T]", value)
@@ -36,7 +36,7 @@ if TYPE_CHECKING:
 
 def get_image_dimensions(image: Image.Image, resolution: float) -> tuple[float, float]:
     shape = np.asarray(image).shape
-    return (shape[0] * resolution, shape[1] * resolution)
+    return (shape[1] * resolution, shape[0] * resolution)
 
 
 def geometry_to_image(

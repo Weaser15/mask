@@ -186,5 +186,21 @@ class Shape:
         assert isinstance(new_geom, Polygon | MultiPolygon)
         return Shape(new_geom, extent)
 
+    def add_gap(self, distance: float):
+        extent = self.get_extent().buffer(distance)
+        return Shape(self.to_shapely(), extent)
+
+    def remove_outer(self):
+        extent = self.get_extent()
+        new_polys = []
+        for poly in get_parts(self.to_shapely()):
+            coords = np.asarray(poly.exterior.coords, dtype=np.float64)
+            if np.any(coords[:, 0] <= extent.x0) | np.any(coords[:, 0] >= extent.x1):
+                continue
+            if np.any(coords[:, 1] <= extent.y0) | np.any(coords[:, 1] >= extent.y1):
+                continue
+            new_polys.append(poly)
+        return Shape(MultiPolygon(new_polys))
+
 
 empty_shape = Shape(Polygon([]), extent=Extent(0.0, 0.0, 0.0, 0.0))
