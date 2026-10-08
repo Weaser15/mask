@@ -1,5 +1,7 @@
 from .shape import Shape, empty_shape
 
+__all__ = ["logic_dots", "spiral"]
+
 
 def logic_dots(unit: Shape, period: float | tuple[float, float], ndots: int):
     period = (period, period) if isinstance(period, float | int) else period

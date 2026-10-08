@@ -15,6 +15,15 @@ from shapely import (
     contains_xy,
 )
 
+__all__ = [
+    "T",
+    "geometry_to_image",
+    "get_image_dimensions",
+    "get_shift_offsets",
+    "plot_geometry",
+    "single_to_tuple",
+]
+
 T = TypeVar("T")
 
 

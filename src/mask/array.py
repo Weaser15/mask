@@ -11,6 +11,19 @@ import mask.tiling.tiling as tiling
 from .shape import Shape, empty_shape
 from .utils import single_to_tuple
 
+__all__ = [
+    "BuildOptions",
+    "honeycomb",
+    "kagome_spin_ice",
+    "multi_rectangular",
+    "rectangular",
+    "rhombic",
+    "shakti_spin_ice",
+    "square_spin_ice",
+    "tetris_spin_ice",
+    "trigonal_spin_ice",
+]
+
 UnitsArg = Shape | Sequence[Shape]
 PeriodsArg = float | Sequence[float]
 TileFunc = Callable[[UnitsArg, PeriodsArg], Shape]

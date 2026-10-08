@@ -7,6 +7,17 @@ from shapely.affinity import scale, skew
 
 from .shape import Shape
 
+__all__ = [
+    "ellipse",
+    "modulated_wire",
+    "parallelogram",
+    "rectangle",
+    "regular_polygon",
+    "ring",
+    "stadium",
+    "superellipse",
+]
+
 
 def ellipse(width: float, height: float, quad_segs: int = 16):
     # Start with a point, then buffer to create a unit circle and finally

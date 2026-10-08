@@ -6,6 +6,8 @@ from typing import Literal, NamedTuple
 
 import numpy as np
 
+__all__ = ["Extent"]
+
 
 class Extent(NamedTuple):
     x0: float
@@ -81,10 +83,11 @@ class Extent(NamedTuple):
         """Return the sizes (width, height) of the extent."""
         return (self.get_width(), self.get_height())
 
-    def buffer(self, distance: float) -> Extent:
+    def buffer(self, distance: float, distance_y: float | None = None) -> Extent:
+        distance_y = distance if distance_y is None else distance_y
         """Add a distance to each side of the extent."""
         return Extent(
-            self.x0 - distance, self.y0 - distance, self.x1 + distance, self.y1 + distance
+            self.x0 - distance, self.y0 - distance_y, self.x1 + distance, self.y1 + distance_y
         )
 
     def translate(self, x: float, y: float) -> Extent:

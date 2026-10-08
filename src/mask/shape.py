@@ -13,6 +13,8 @@ from shapely.ops import unary_union
 from .extent import Extent
 from .utils import geometry_to_image, get_image_dimensions, plot_geometry
 
+__all__ = ["Shape", "empty_shape"]
+
 
 class Shape:
     def __init__(self, geom: Polygon | MultiPolygon, extent: Extent | None = None):
@@ -186,8 +188,8 @@ class Shape:
         assert isinstance(new_geom, Polygon | MultiPolygon)
         return Shape(new_geom, extent)
 
-    def add_gap(self, distance: float):
-        extent = self.get_extent().buffer(distance)
+    def add_gap(self, distance: float, distance_y: float | None = None):
+        extent = self.get_extent().buffer(distance, distance_y)
         return Shape(self.to_shapely(), extent)
 
     def remove_outer(self):

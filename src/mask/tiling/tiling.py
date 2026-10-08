@@ -4,6 +4,19 @@ import numpy as np
 
 from ..extent import Extent
 
+__all__ = [
+    "Tiling",
+    "honeycomb",
+    "kagome_spin_ice",
+    "multi_rectangular",
+    "rectangular",
+    "rhombic",
+    "shakti_spin_ice",
+    "square_spin_ice",
+    "tetris_spin_ice",
+    "trigonal_spin_ice",
+]
+
 
 def _fill_periods(a1: float, a2: float | None, a3: float | None):
     return [a1, a1 if a2 is None else a2, a1 if a3 is None else a3]
