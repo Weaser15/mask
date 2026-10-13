@@ -63,7 +63,7 @@ def _build_cell(
     array = empty_shape.union(
         [build_units[i].translate(*p).rotate(r) for p, r, i in zip(positions, rotations, indices)]
     )
-    return array, extent
+    return array.set_extent(extent)
     # return array.wrap_inside_extent(extent), extent
 
 
@@ -77,11 +77,10 @@ def _build(
     rotation: float = 0.0,
     view_offset: tuple[float, float] = (0.0, 0.0),
 ) -> Shape:
-    cell, cell_extent = _build_cell(tile, units, periods, rotation, view_offset)
-    w, h = cell_extent.get_sizes()
-    array = empty_shape.union([cell.translate(i * w, j * h) for i in range(nx) for j in range(ny)])
+    cell = _build_cell(tile, units, periods, rotation, view_offset)
+    cell_extent = cell.get_extent()
+    array = cell.tile(nx=nx, ny=ny, centre=False)
     array = array.wrap_inside_extent(cell_extent.scale((nx, ny)))
-    # print(len(array.to_shapely().geoms))
     return array
 
 

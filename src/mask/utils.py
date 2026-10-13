@@ -43,14 +43,14 @@ if TYPE_CHECKING:
     from .shape import Shape
 
 
-def get_image_dimensions(image: Image.Image, resolution: float) -> tuple[float, float]:
+def get_image_dimensions(image: Image.Image, px_size: float) -> tuple[float, float]:
     shape = np.asarray(image).shape
-    return (shape[1] * resolution, shape[0] * resolution)
+    return (shape[1] * px_size, shape[0] * px_size)
 
 
 def geometry_to_image(
     geom: Polygon | MultiPolygon,
-    resolution: float = 1.0,
+    px_size: float = 1.0,
     extent: Extent | None = None,
     padding: float = 0.0,
     positive: bool = True,
@@ -60,11 +60,11 @@ def geometry_to_image(
     if extent is None:
         extent = Extent(*geom.bounds).buffer(padding)
 
-    if extent.get_sizes()[0] < resolution or extent.get_sizes()[1] < resolution:
-        raise ValueError("ERROR: No geometry detected: likely rounding too high.")
+    if extent.get_sizes()[0] < px_size or extent.get_sizes()[1] < px_size:
+        raise ValueError("ERROR: No geometry detected. Likely rounding too high.")
 
-    x = np.arange((extent[0] + 0.5 * resolution), extent[2] + 0.5 * resolution, resolution)  # type: ignore
-    y = np.arange(extent[1] + 0.5 * resolution, extent[3] + 0.5 * resolution, resolution)  # type: ignore
+    x = np.arange((extent[0] + 0.5 * px_size), extent[2] + 0.5 * px_size, px_size)  # type: ignore
+    y = np.arange(extent[1] + 0.5 * px_size, extent[3] + 0.5 * px_size, px_size)  # type: ignore
 
     xx, yy = np.meshgrid(x, y)
 

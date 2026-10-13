@@ -53,21 +53,21 @@ class Shape:
     def to_image(
         self,
         filepath: str | Path | None = None,
-        resolution: float = 1.0,
+        px_size: float = 1.0,
         print_dimensions: bool = True,
     ):
 
-        # Round everything to match the resolution
+        # Round everything to match the px_size
         extent = self.get_extent()
-        new_extent = extent.scale(1 / resolution).round().scale(resolution)
+        new_extent = extent.scale(1 / px_size).round().scale(px_size)
         xfact = new_extent.get_width() / extent.get_width()
         yfact = new_extent.get_height() / extent.get_height()
         geom = scale(self.to_shapely(), xfact, yfact)
-        image = geometry_to_image(geom, resolution, new_extent)
+        image = geometry_to_image(geom, px_size, new_extent)
         if filepath is not None:
             image.save(filepath)
         if print_dimensions:
-            print("{:g}nm x {:g}nm".format(*get_image_dimensions(image, resolution)))
+            print("{:g}nm x {:g}nm".format(*get_image_dimensions(image, px_size)))
 
         return image
 
@@ -190,7 +190,7 @@ class Shape:
 
     def add_gap(self, distance: float, distance_y: float | None = None):
         extent = self.get_extent().buffer(distance, distance_y)
-        return Shape(self.to_shapely(), extent)
+        return self.set_extent(extent)
 
     def remove_outer(self):
         extent = self.get_extent()
@@ -203,6 +203,19 @@ class Shape:
                 continue
             new_polys.append(poly)
         return Shape(MultiPolygon(new_polys))
+
+    def tile(self, nx: int, ny: int, centre: bool = True):
+        w, h = self.get_extent().get_sizes()
+        array = empty_shape.union(
+            [self.translate(i * w, j * h) for i in range(nx) for j in range(ny)]
+        )
+        if centre:
+            array = array.centre()
+        return array
+
+    def set_extent(self, extent: Extent):
+        geom = self.to_shapely()
+        return Shape(geom, extent)
 
 
 empty_shape = Shape(Polygon([]), extent=Extent(0.0, 0.0, 0.0, 0.0))
