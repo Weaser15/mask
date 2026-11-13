@@ -32,7 +32,7 @@ class Extent(NamedTuple):
         origin: Literal["center"] | tuple[float, float] = "center",
     ) -> Extent:
         origin = self.get_centre() if origin == "center" else origin
-        if isinstance(other, float):
+        if isinstance(other, float | int):
             x_mul = other
             y_mul = other
         elif isinstance(other, (np.ndarray, list, tuple)):
